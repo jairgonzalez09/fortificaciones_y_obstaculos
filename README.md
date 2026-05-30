@@ -22,10 +22,10 @@ graph TD
 erDiagram
     MULTIMEDIA_INFO {
         int id PK
-        string name
-        string decription
-        string classification
-        string type
+        varchar name
+        varchar decription
+        enum_multimedia_info_classification classification
+        varchar type
         int multimediaid 
         timestamp createat
         timestamp updatedat
@@ -33,8 +33,8 @@ erDiagram
 
     MULTIMEDIA_files {
         int id PK
-        string url
-        string type
+        varchar url
+        enum_multimedia_info_classification type
         timestamp createat
         timestamp updatedat
     }
