@@ -31,5 +31,5 @@ jobs:
     - name: Verificar errores sintacticos en el Backend
       run: |
         echo "Iniciando inspección sintáctica en el ecosistema Express..."
-        node --check ./index.js
+        node --check ./src/index.js
         echo "✅ El archivo principal no contiene errores léxicos ni sintácticos estructurales."
