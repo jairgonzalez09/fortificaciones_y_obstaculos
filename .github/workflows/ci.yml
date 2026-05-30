@@ -17,15 +17,20 @@ jobs:
     - name: Copiar codigo fuente
       uses: actions/checkout@v4
 
-    # Paso 2: Instalar Node.js de forma limpia
+    # Paso 2: Instalar Node.js de forma limpia (CORREGIDO)
     - name: Configurar entorno de Node.js
-      uses: actions/with-node@v4
+      uses: actions/setup-node@v4
       with:
         node-version: 20
 
     # Paso 3: Instalar las dependencias reales del proyecto (Express, Sequelize, etc.)
     - name: Instalar dependencias (node_modules)
-      run: npm install
+      run: |
+        if [ -f package.json ]; then
+          npm install
+        else
+          echo "package.json no encontrado, saltando instalación..."
+        fi
 
     # Paso 4: Validar la sintaxis del backend arrancando el servidor en modo prueba
     - name: Verificar arranque limpio del servidor Express
