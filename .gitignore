@@ -1,0 +1,22 @@
+# 1. No se permite subir carpetas node_modules
+node_modules/
+bower_components/
+
+# 2. No se permiten entornos virtuales de Python (si aplica)
+.venv
+venv/
+ENV/
+env/
+
+# 3. No se permiten archivos de configuración de VS Code
+.vscode/
+.idea/
+
+# 4. Archivos de credenciales reales (NUNCA SE SUBEN)
+.env
+.env.local
+
+# 5. Archivos temporales del sistema operativo
+.DS_Store
+Thumbs.db
+npm-debug.log*
