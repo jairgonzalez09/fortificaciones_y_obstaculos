@@ -7,16 +7,17 @@ Este sistema automatiza y recopila las especificaciones técnicas de fortificaci
 
 ## 📐 Arquitectura del Sistema (Mermaid.js)
 
-### Flujo de Navegación del Operador
+### 🚀 1. Flujo de Navegación del Operador de Terreno
 ```mermaid
 graph TD
-    A[👤 Operador de Terreno / Cliente] -->|Interactúa| B(💻 Interfaz Web: HTML/CSS)
-    B -->|Peticiones API| C[⚙️ Servidor Express / Node.js]
-    C -->|Consulta Modelos con Sequelize| D[(💾 Base de Datos: PostgreSQL)]
-    D -->|Retorna Datos de Resistencia| C
-    C -->|Inyecta Datos Dinámicos| B
-### 📊 2. Modelo Entidad-Relación de la Base de Datos (PostgreSQL)
+    A(👤 Operador de Terreno) -->|1. Elige una opción en el menú| B[💻 Interfaz Principal: HTML/CSS]
+    B -->|2. Captura el click y procesa| C[⚙️ Controlador Dinámico JavaScript]
+    C -->|3. Consulta parámetros técnicos| D[(💾 Base de Datos: PostgreSQL)]
+    D -->|4. Retorna datos de resistencia| C
+    C -->|5. Inyecta el contenido dinámicamente| B
+```
 
+### 📊 2. Modelo Entidad-Relación de la Base de Datos (PostgreSQL)
 ```mermaid
 erDiagram
     MULTIMEDIA_INFO {
@@ -37,3 +38,4 @@ erDiagram
         timestamp createat
         timestamp updatedat
     }
+```
