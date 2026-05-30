@@ -1,5 +1,6 @@
 name: pipeline-integracion-continua-mtrr
 
+# El robot se activa solo cuando alguien hace un Push o abre un Pull Request hacia la rama main
 on:
   push:
     branches: [ main ]
@@ -8,28 +9,35 @@ on:
 
 jobs:
   verificar-servidor:
+    # Se ejecuta en una computadora virtual con Ubuntu (Linux) ultra rápida en la nube
     runs-on: ubuntu-latest
 
     steps:
+    # Paso 1: Clonar el código del repositorio dentro de la máquina virtual
     - name: Copiar codigo fuente
       uses: actions/checkout@v4
 
-    # AQUÍ ESTÁ LA CORRECCIÓN: Cambiamos 'with-node' por 'setup-node'
+    # Paso 2: Instalar Node.js de forma limpia
     - name: Configurar entorno de Node.js
-      uses: actions/setup-node@v4
+      uses: actions/with-node@v4
       with:
         node-version: 20
 
+    # Paso 3: Instalar las dependencias reales del proyecto (Express, Sequelize, etc.)
     - name: Instalar dependencias (node_modules)
-      run: |
-        if [ -f package.json ]; then
-          npm install
-        else
-          echo "package.json no encontrado, saltando instalación..."
-        fi
+      run: npm install
 
-    - name: Verificar errores sintacticos en el Backend
+    # Paso 4: Validar la sintaxis del backend arrancando el servidor en modo prueba
+    - name: Verificar arranque limpio del servidor Express
       run: |
-        echo "Iniciando inspección sintáctica en el ecosistema Express..."
-        node --check ./src/index.js
-        echo "✅ El archivo principal no contiene errores léxicos ni sintácticos estructurales."
+        echo "Iniciando prueba sintáctica del servidor..."
+        node -e "
+          try {
+            require('./src/index.js');
+            console.log('✅ El servidor Express compila perfectamente sin errores léxicos o sintácticos.');
+            process.exit(0);
+          } catch (error) {
+            console.error('❌ Error crítico detectado en el backend:', error.message);
+            process.exit(1);
+          }
+        "
