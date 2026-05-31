@@ -26,7 +26,7 @@ erDiagram
         varchar decription
         enum_multimedia_info_classification classification
         varchar type
-        int multimediaid 
+        double multimediaid 
         timestamp createat
         timestamp updatedat
     }
