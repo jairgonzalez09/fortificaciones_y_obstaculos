@@ -98,77 +98,59 @@ erDiagram
 ### 🚀 1. Diagrama de flujo
 ```mermaid
 graph LR
-    %% Configuración de Estilos basados en la imagen
-    classDef frontend fill:#e8f4fd,stroke:#2196f3,stroke-width:2px,color:#000;
-    classDef backend fill:#e8f5e9,stroke:#4caf50,stroke-width:2px,color:#000;
-    classDef database fill:#d0e1f9,stroke:#1e3d59,stroke-width:2px,color:#000;
-    classDef componente fill:#ffffff,stroke:#333333,stroke-width:1px,color:#000;
-    classDef decis fill:#fff3cd,stroke:#ffe69c,stroke-width:1px,color:#000;
+    %% Configuración de Estilos Básicos
+    classDef capa fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef componente fill:#ffffff,stroke:#2196f3,stroke-width:1px,color:#000;
+    classDef backend fill:#ffffff,stroke:#4caf50,stroke-width:1px,color:#000;
+    classDef db fill:#ffffff,stroke:#1e3d59,stroke-width:1px,color:#000;
 
-    %% --- LADO DEL CLIENTE (FRONTEND) ---
-    subgraph Frontend ["Lado del Cliente (Frontend)"]
-        Usuario((👤<br>Usuario))
-        
-        subgraph Interfaz ["Interfaz de Usuario (Navegador MTRR)"]
-            subgraph Tecnologias ["Visualización 2D en Mapa Táctico"]
-                HTML["<b>HTML5</b><br>Estructura .html<br>(Lienzo del Mapa)"]:::componente
-                CSS["<b>CSS3</b><br>Estilo .css<br>(Renderizado de Iconos)"]:::componente
-                JS["<b>JavaScript (fetch)</b><br>Lógica .js<br>(Interactividad de Capas)"]:::componente
-            end
-            Marcadores["📍 Manejo de Marcadores"]:::componente
-            UserInput["⌨️ User-Input"]:::componente
-        end
+    %% --- CAPA FRONTEND ---
+    subgraph Frontend ["Lado del Cliente (Frontend) - Interfaz MTRR"]
+        Usuario((👤 Usuario))
+        HTML["🌐 HTML5 (Lienzo del Mapa)"]
+        CSS["🎨 CSS3 (Renderizado de Iconos)"]
+        JS["⚡ JavaScript Fetch (Lógica y Capas)"]
+        Marcadores["📍 Manejo de Marcadores"]
+        UserInput["⌨️ User-Input"]
     end
-    class Frontend frontend;
 
-    %% --- LADO DEL SERVIDOR (BACKEND) ---
-    subgraph Backend ["Lado del Servidor (Backend)"]
-        subgraph ServerExpress ["Servidor Express.js (Node.js) - API de Recursos Multimedia"]
-            Rutas["<b>Rutas</b><br>• /api/multimedia<br>• /api/multimedia/:id"]:::componente
-            Middleware["<b>Middleware</b><br>• Autenticación y Registro<br>• Análisis de Cuerpo (JSON/Form-Data)"]:::componente
-            Controllers["<b>Controllers</b><br>Lógica de Negocio<br>(Manejo de Consultas Multimedia)"]:::componente
-            
-            subgraph SequelizeBox ["Sequelize (Objetos JavaScript ↔ Consultas DB)"]
-                M_Info["MultimediaInfo (Model)"]:::componente
-                M_File["MultimediaFile (Model)"]:::componente
-            end
-            
-            Mapeo["Mapeo de Modelos Sequelize"]:::componente
-        end
+    %% --- CAPA BACKEND ---
+    subgraph Backend ["Lado del Servidor (Backend) - Express.js"]
+        Rutas["🛣️ Rutas (/api/multimedia)"]
+        Middleware["🛡️ Middleware (Autenticación/Cuerpo)"]
+        Controllers["🧠 Controllers (Lógica de Negocio)"]
+        Sequelize["🔄 ORM Sequelize (Modelos y Mapeo)"]
     end
-    class Backend backend;
 
-    %% --- BASE DE DATOS ---
-    subgraph Database ["Base de Datos Relacional (PostgreSQL)"]
-        subgraph DB_Cilindro ["🛢️ Almacenamiento de Datos Tácticos"]
-            Catalogo["<b>**Catálogo de Recursos Tácticos (Conceptual)**</b><br>(Referencia conceptual a la estructura 'multimedia_info')"]:::componente
-            Relacion["1:N Relación Conceptual<br>(Táctico <-> Archivo)"]:::decis
-            Activos["<b>**Almacenamiento de Activos Visuales (Abstracto)**</b><br>(Referencia conceptual a la estructura 'multimedia_files')"]:::componente
-        end
+    %% --- CAPA BASE DE DATOS ---
+    subgraph Database ["Base de Datos (PostgreSQL)"]
+        Catalogo["📚 Catálogo Recursos Tácticos"]
+        Relacion{{"1:N Relación"}}
+        Activos["🎬 Almacenamiento Activos Visuales"]
     end
-    class Database database;
 
-    %% --- FLUJOS DE INTERACCIÓN Y DATOS ---
-    Usuario --> Marcadores & UserInput
-    Marcadores & UserInput --> Interfaz
+    %% --- ASIGNACIÓN DE ESTILOS POR CLASES ---
+    class HTML,CSS,JS,Marcadores,UserInput componente;
+    class Rutas,Middleware,Controllers,Sequelize backend;
+    class Catalogo,Activos db;
+
+    %% --- FLUJOS DE ENTRADA Y PETICIONES ---
+    Usuario --> UserInput
+    Usuario --> Marcadores
+    UserInput & Marcadores --> JS
     
-    %% Envío del Frontend al Backend
-    Interfaz -->|"(Peticiones HTTP JSON/API)"| Rutas
+    %% Petición HTTP del Frontend al Backend
+    JS -->| "Peticiones HTTP (JSON)" | Rutas
     Rutas --> Middleware
     Middleware --> Controllers
-    Controllers --> SequelizeBox
-    
-    %% Conexiones Internas de Sequelize
-    M_Info --> M_File
-    SequelizeBox --> Mapeo
-    Mapeo <-->|"Definición de Esquema JS"| Mapeo
-    
+    Controllers --> Sequelize
+
     %% Comunicación Backend ↔ Database
-    SequelizeBox <-->|"Consultas SQL / Resultados de Datos (JSON)"| Catalogo
+    Sequelize <-->| "Consultas SQL / JSON" | Catalogo
     Catalogo --> Relacion
     Relacion --> Activos
-    
-    %% Flujo de datos de retorno (Cierre del ciclo)
-    Activos -->|"FLUJO DE DATOS MULTIMEDIA (Animación / Imagen)"| Interfaz
-    SequelizeBox -.->|"Respuestas HTTP (Datos JSON)"| Interfaz
+
+    %% Flujo de respuesta final (Cierre del ciclo)
+    Sequelize -.->| "Respuestas HTTP (JSON)" | JS
+    Activos -.->| "Flujo de Datos Multimedia (Animación)" | HTML
 ```
