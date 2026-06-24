@@ -95,7 +95,7 @@ erDiagram
     }
 ```
 
-### 🚀 1. Diagrama de flujo
+### 🚀 1. Diagrama de arquitectura
 ```mermaid
 graph LR
     %% Configuración de Estilos Básicos
@@ -134,23 +134,24 @@ graph LR
     class Rutas,Middleware,Controllers,Sequelize backend;
     class Catalogo,Activos db;
 
-    %% --- FLUJOS DE ENTRADA Y PETICIONES ---
+    %% --- FLUJOS DE ENTRADA Y PETICIONES (Líneas individuales para evitar el Parse Error) ---
     Usuario --> UserInput
     Usuario --> Marcadores
-    UserInput & Marcadores --> JS
+    UserInput --> JS
+    Marcadores --> JS
     
     %% Petición HTTP del Frontend al Backend
-    JS -->| "Peticiones HTTP (JSON)" | Rutas
+    JS --> Rutas
     Rutas --> Middleware
     Middleware --> Controllers
     Controllers --> Sequelize
 
     %% Comunicación Backend ↔ Database
-    Sequelize <-->| "Consultas SQL / JSON" | Catalogo
+    Sequelize <--> Catalogo
     Catalogo --> Relacion
     Relacion --> Activos
 
     %% Flujo de respuesta final (Cierre del ciclo)
-    Sequelize -.->| "Respuestas HTTP (JSON)" | JS
-    Activos -.->| "Flujo de Datos Multimedia (Animación)" | HTML
+    Sequelize -.-> JS
+    Activos -.-> HTML
 ```
