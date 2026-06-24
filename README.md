@@ -98,60 +98,94 @@ erDiagram
 ### 🚀 1. Diagrama de arquitectura
 ```mermaid
 graph LR
-    %% Configuración de Estilos Básicos
-    classDef capa fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef componente fill:#ffffff,stroke:#2196f3,stroke-width:1px,color:#000;
-    classDef backend fill:#ffffff,stroke:#4caf50,stroke-width:1px,color:#000;
-    classDef db fill:#ffffff,stroke:#1e3d59,stroke-width:1px,color:#000;
+    %% ----------------------------------------------------
+    %% CONFIGURACIÓN DE ESTILOS Y COLORES (Fieles a tu imagen)
+    %% ----------------------------------------------------
+    classDef capa fill:#1a1a1a,stroke:#444,stroke-width:2px,color:#fff;
+    classDef componente fill:#fff,stroke:#1e3d59,stroke-width:1.5px,color:#000;
+    classDef cajaFront fill:#fff3cd,stroke:#ffe69c,stroke-width:1.5px,color:#000;
+    classDef cajaBack fill:#e8f5e9,stroke:#4caf50,stroke-width:1.5px,color:#000;
+    classDef db fill:#ffffff,stroke:#1e3d59,stroke-width:1.5px,color:#000;
+    classDef invisible fill:none,stroke:none,color:#fff;
 
-    %% --- CAPA FRONTEND ---
-    subgraph Frontend ["Lado del Cliente (Frontend) - Interfaz MTRR"]
-        Usuario((👤 Usuario))
-        HTML["🌐 HTML5 (Lienzo del Mapa)"]
-        CSS["🎨 CSS3 (Renderizado de Iconos)"]
-        JS["⚡ JavaScript Fetch (Lógica y Capas)"]
-        Marcadores["📍 Manejo de Marcadores"]
-        UserInput["⌨️ User-Input"]
+    %% ----------------------------------------------------
+    %% LADO DEL CLIENTE (FRONTEND)
+    %% ----------------------------------------------------
+    subgraph Frontend ["Lado del Cliente (Frontend)"]
+        Usuario["👤 Usuario"]:::componente
+        
+        subgraph Interfaz ["Interfaz de Usuario (Navegador MTRR) - Visualización 2D"]
+            HTML["<b>HTML5</b><br>Estructura .html (Lienzo del Mapa)"]:::cajaFront
+            CSS["<b>CSS3</b><br>Estilo .css (Renderizado de Iconos)"]:::cajaFront
+            JS["<b>JavaScript (fetch)</b><br>Lógica .js (Interactividad de Capas)"]:::cajaFront
+            
+            Marcadores["💻 Manejo de Marcadores"]:::componente
+            UserInput["📝 User-Input"]:::componente
+        end
     end
 
-    %% --- CAPA BACKEND ---
-    subgraph Backend ["Lado del Servidor (Backend) - Express.js"]
-        Rutas["🛣️ Rutas (/api/multimedia)"]
-        Middleware["🛡️ Middleware (Autenticación/Cuerpo)"]
-        Controllers["🧠 Controllers (Lógica de Negocio)"]
-        Sequelize["🔄 ORM Sequelize (Modelos y Mapeo)"]
+    %% ----------------------------------------------------
+    %% LADO DEL SERVIDOR (BACKEND)
+    %% ----------------------------------------------------
+    subgraph Backend ["Lado del Servidor (Backend)"]
+        subgraph ServerExpress ["Servidor Express.js (Node.js) - API de Recursos Multimedia"]
+            Rutas["<b>Rutas</b><br>• /api/multimedia<br>• /api/multimedia/:id"]:::cajaBack
+            Middleware["<b>Middleware</b><br>• Autenticación y Registro<br>• Análisis (JSON/Form-Data)"]:::cajaBack
+            Controllers["<b>Controllers</b><br>Lógica de Negocio<br>(Consultas Multimedia)"]:::cajaBack
+            
+            subgraph SequelizeBox ["Sequelize (Objetos JS ↔ Consultas DB)"]
+                Models["• MultimediaInfo (Model)<br>• MultimediaFile (Model)"]:::componente
+                Mapeo["Mapeo de Modelos Sequelize"]:::componente
+            end
+        end
     end
 
-    %% --- CAPA BASE DE DATOS ---
-    subgraph Database ["Base de Datos (PostgreSQL)"]
-        Catalogo["📚 Catálogo Recursos Tácticos"]
-        Relacion{{"1:N Relación"}}
-        Activos["🎬 Almacenamiento Activos Visuales"]
+    %% ----------------------------------------------------
+    %% BASE DE DATOS (POSTGRESQL)
+    %% ----------------------------------------------------
+    subgraph Database ["Base de Datos Relacional (PostgreSQL)"]
+        subgraph DB_Cilindro ["🛢️ Almacenamiento de Datos Tácticos"]
+            Catalogo["<b>🏰 Catálogo de Recursos Tácticos (Conceptual)</b><br>(Estructura 'multimedia_info')"]:::db
+            Relacion["1:N Relación Conceptual (Táctico <-> Archivo)"]:::cajaFront
+            Activos["<b>🎬 Almacenamiento de Activos Visuales (Abstracto)</b><br>(Estructura 'multimedia_files')"]:::db
+        end
     end
 
-    %% --- ASIGNACIÓN DE ESTILOS POR CLASES ---
-    class HTML,CSS,JS,Marcadores,UserInput componente;
-    class Rutas,Middleware,Controllers,Sequelize backend;
-    class Catalogo,Activos db;
+    %% Nodos invisibles de flujo externo para etiquetado limpio
+    PetHTTP["Peticiones HTTP<br>(JSON/API)"]:::invisible
+    ResHTTP["Respuestas HTTP<br>(Datos JSON)"]:::invisible
+    SQLData["Consultas SQL /<br>Resultados (JSON)"]:::invisible
 
-    %% --- FLUJOS DE ENTRADA Y PETICIONES (Líneas individuales para evitar el Parse Error) ---
-    Usuario --> UserInput
+    %% ----------------------------------------------------
+    %% CONEXIONES Y FLUJOS DE DATOS (Orden Lineal Estricto)
+    %% ----------------------------------------------------
+    %% Interacción del usuario
     Usuario --> Marcadores
-    UserInput --> JS
+    Usuario --> UserInput
     Marcadores --> JS
-    
-    %% Petición HTTP del Frontend al Backend
-    JS --> Rutas
+    UserInput --> JS
+
+    %% Frontend hacia Backend
+    JS --> PetHTTP
+    PetHTTP --> Rutas
     Rutas --> Middleware
     Middleware --> Controllers
-    Controllers --> Sequelize
+    Controllers --> SequelizeBox
 
-    %% Comunicación Backend ↔ Database
-    Sequelize <--> Catalogo
+    %% Lógica interna de Sequelize
+    Models --> Mapeo
+    Mapeo <-->|"Definición de Esquema JS"| Mapeo
+
+    %% Backend hacia Base de Datos (Ida y Vuelta)
+    SequelizeBox <--> SQLData
+    SQLData <--> Catalogo
+    
+    %% Estructura interna de la DB
     Catalogo --> Relacion
     Relacion --> Activos
 
-    %% Flujo de respuesta final (Cierre del ciclo)
-    Sequelize -.-> JS
-    Activos -.-> HTML
+    %% Flujos de retorno al Cliente
+    SequelizeBox -.-> ResHTTP
+    ResHTTP -.-> JS
+    Activos ==>|"FLUJO DE DATOS MULTIMEDIA (Animación / Imagen)"| Interfaz
 ```
