@@ -14,7 +14,7 @@ export const MultimediaInfo = sequelize.define('MultimediaInfo', {
     },
 
     description: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         allowNull: false
     },
 
@@ -30,19 +30,38 @@ export const MultimediaInfo = sequelize.define('MultimediaInfo', {
     
     multimediaId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        field: 'multimedia_id'
+    },
+
+    parentId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        field: 'parent_id',
+        references: {
+            model: 'multimedia_info',
+            key: 'id'
+        }
+    },
+    stepOrder: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        field: 'step_order'
     }
 }, {
     tableName: 'multimedia_info',
     timestamps: true,
     indexes: [
+        { name: 'idx_multimedia_info_classification', fields: ['classification'] },
+        { name: 'idx_multimedia_info_type', fields: ['type'] },
+        { name: 'idx_multimedia_info_parent', fields: ['parent_id'] },
         {
-            name: 'idx_multimedia_info_classification',
-            fields: ['classification']
-        },
-        {
-            name: 'idx_multimedia_info_type',
-            fields: ['type']
+            name: 'unique_catalog_main_title',
+            unique: true,
+            fields: ['name'],
+            where: {
+                parent_id: null
+            }
         }
     ]
 })
