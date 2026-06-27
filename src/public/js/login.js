@@ -1,4 +1,6 @@
     const API_URL = 'http://localhost:3000/api/user/catalog/fortificaciones/all';
+    const FETCH_API_URL = 'http://localhost:3000/api/user/catalog/fortificaciones/all';
+
 (() => {
     const form = document.querySelector('form') || document.forms[0];
     
@@ -37,7 +39,7 @@
         }
 
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch(FETCH_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
