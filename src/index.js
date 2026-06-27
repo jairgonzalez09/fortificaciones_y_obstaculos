@@ -1,5 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
+import path from 'path';
 
 import routes from './routes/directory.js';
 import loadMiddlewares from './middlewares/index.js';
@@ -11,7 +12,8 @@ const app = express();
 
 loadMiddlewares(app);
 
-app.use('/api', routes);
+app.use('/', routes);
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use(errorHandler);
 

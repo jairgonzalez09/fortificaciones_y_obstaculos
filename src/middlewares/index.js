@@ -3,6 +3,8 @@ import cors from 'cors';
 import path from 'path';
 
 let corsOptions = {
+    origin: "*",
+    allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 };
 

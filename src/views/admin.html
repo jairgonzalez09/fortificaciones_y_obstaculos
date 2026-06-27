@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Crear Nuevo Elemento de Catálogo - Fortobs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Hanken+Grotesk:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="../styles/admin.css" rel="stylesheet">
+    <link href="../styles/index.css" rel="stylesheet">
+    <style>
+        select, option {
+            font-family: inherit
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col overflow-x-hidden">
+
+    <header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-2xl border-b border-white/5 shadow-sm flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 transition-all">
+        <div class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight font-extrabold flex items-center gap-2">Fortobs</div>
+        <div class="flex items-center gap-4">
+            <button type="button" id="logoutBtn" class="bg-transparent border border-[#ff4444] text-[#ff4444] hover:bg-[#ff4444]/10 hover:shadow-[0_0_15px_rgba(255,68,68,0.2)] px-4 py-1.5 rounded-lg font-body-md text-sm font-semibold flex items-center gap-2 transition-all duration-300">
+                <span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+                Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 mt-16 p-margin-mobile md:p-margin-desktop bg-background min-h-screen relative overflow-hidden flex flex-col items-center">
+        <div class="absolute top-[-20%] left-[20%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[150px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-tertiary-fixed/5 rounded-full blur-[120px] pointer-events-none"></div>
+        
+        <form onsubmit="return false;" class="w-full max-w-4xl flex flex-col gap-10 relative z-10">
+            
+            <div class="mb-2 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-fade-in-up">
+                <div>
+                    <h1 class="font-display-lg text-display-lg text-on-surface">Crear Nuevo Elemento de Catálogo</h1>
+                    <p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-2xl">Define tu nueva entrada de catálogo y configura sus parámetros iniciales de entrenamiento.</p>
+                </div>
+                <div class="flex gap-4 w-full md:w-auto">
+                    <button type="submit" class="btn-primary animate-pulse-soft px-8 py-3 rounded-lg font-body-md text-body-md font-semibold flex-1 md:flex-none">Crear Elemento</button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-10">
+                
+                <div class="glass-panel rounded-xl overflow-hidden animate-fade-in-up delay-100">
+                    <div class="glass-header px-8 py-5 flex items-center justify-between">
+                        <h3 class="font-headline-lg text-headline-lg-mobile text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+                            Información Básica
+                        </h3>
+                    </div>
+                    <div class="p-8 flex flex-col gap-8">
+                        <div class="floating-label-group input-glass rounded-lg overflow-hidden group">
+                            <input class="floating-input bg-transparent border-none focus:ring-0 text-on-surface font-body-md text-body-md" id="itemName" placeholder=" " type="text" required>
+                            <label class="floating-label font-body-md text-body-md group-focus-within:text-primary transition-colors" for="itemName">Nombre del Elemento</label>
+                        </div>
+                        <div class="input-glass rounded-lg p-1 group">
+                            <textarea class="w-full bg-transparent border-none focus:ring-0 text-on-surface font-body-md text-body-md p-5 resize-none transition-colors" placeholder="Descripción detallada del elemento del catálogo..." rows="4" required></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="flex flex-col gap-2">
+                                <label class="font-label-sm text-label-sm text-on-surface-variant ml-1 transition-colors group-focus-within:text-primary">Clasificación</label>
+                                <div class="relative input-glass rounded-lg hover:border-primary/50 transition-colors group">
+                                    <select class="w-full bg-transparent border-none focus:ring-0 text-on-surface font-display-lg font-body-md text-body-md p-4 appearance-none" required>
+                                        <option class="bg-surface-container" disabled selected value="">Seleccionar clasificación...</option>
+                                        <option class="bg-surface-container" value="fortificaciones">Fortificaciones</option>
+                                        <option class="bg-surface-container" value="obstaculos">Obstáculos</option>
+                                    </select>
+                                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none transition-transform duration-300 group-hover:text-primary group-focus-within:rotate-180" data-icon="expand_more">expand_more</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="font-label-sm text-label-sm text-on-surface-variant ml-1 transition-colors group-focus-within:text-primary">Tipo</label>
+                                <div class="input-glass rounded-lg overflow-hidden group">
+                                    <input class="w-full bg-transparent border-none focus:ring-0 text-on-surface font-body-md text-body-md p-4" id="itemType" placeholder="Introduce el tipo..." type="text" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden animate-fade-in-up delay-300">
+                    <div class="glass-header px-6 py-4 border-b border-white/5">
+                        <h3 class="font-body-md text-body-md font-semibold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary" data-icon="image">image</span>
+                            Imagen de Portada
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="upload-zone rounded-lg p-8 flex flex-col items-center justify-center text-center cursor-pointer min-h-[220px] group relative overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay transition-opacity duration-300 group-hover:opacity-20" style="background-image: url('https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg');"></div>
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="rounded-full bg-background/80 border border-white/10 flex items-center justify-center mb-4 text-on-surface transition-all duration-300 group-hover:bg-primary/20 group-hover:text-primary group-hover:border-primary/30 group-hover:shadow-[0_0_15px_rgba(0,230,57,0.2)] w-12 h-12">
+                                    <span class="material-symbols-outlined text-2xl" data-icon="cloud_upload">cloud_upload</span>
+                                </div>
+                                <p class="font-body-md text-body-md text-on-surface font-semibold transition-colors duration-300 group-hover:text-primary">Arrastra y suelta la imagen aquí</p>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant mt-2">o haz clic para explorar</p>
+                                <div class="mt-5 flex gap-2">
+                                    <span class="px-2 py-1 bg-background/80 border border-white/5 text-on-surface-variant text-[10px] rounded uppercase tracking-wider transition-colors duration-300 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20">PNG</span>
+                                    <span class="px-2 py-1 bg-background/80 border border-white/5 text-on-surface-variant text-[10px] rounded uppercase tracking-wider transition-colors duration-300 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20">JPG</span>
+                                    <span class="px-2 py-1 bg-background/80 border border-white/5 text-on-surface-variant text-[10px] rounded uppercase tracking-wider transition-colors duration-300 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20">WEBP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden animate-fade-in-up delay-200">
+                    <div class="glass-header px-8 py-5 flex items-center justify-between border-b border-white/5">
+                        <h3 class="font-headline-lg text-headline-lg-mobile text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary" data-icon="route">route</span>
+                            Pasos
+                        </h3>
+                        <span id="step-counter-badge" class="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded text-xs font-semibold">Pasos 1</span>
+                    </div>
+                    <div class="p-8 flex flex-col gap-6">
+                        <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mb-2 border border-white/5">
+                            <div id="step-progress-bar" class="h-full bg-primary w-full relative overflow-hidden transition-all duration-1000 ease-in-out shadow-[0_0_10px_rgba(0,230,57,0.8)]">
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent w-[200%] animate-[slide_2s_linear_infinite]"></div>
+                            </div>
+                        </div>
+
+                        <div id="dynamicStepsContainer" class="flex flex-col gap-8"></div>
+
+                        <button type="button" class="btn-ghost w-full py-3 rounded-lg font-body-md text-body-md font-semibold flex items-center justify-center gap-2 mt-2 group">
+                            <span class="material-symbols-outlined text-lg transition-transform duration-300 group-hover:rotate-90" data-icon="add">add</span>
+                            Añadir Otro Paso
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </main>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>
