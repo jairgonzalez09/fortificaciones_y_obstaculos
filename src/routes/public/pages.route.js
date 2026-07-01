@@ -24,4 +24,12 @@ router.get('/admin', (req, res) => {
     res.sendFile(path.join(pagesDirectory, 'admin.html'))
 });
 
+router.get('/admin/catalog-list', (req, res) => {
+    res.sendFile(path.join(pagesDirectory, 'admin-catalog-list.html'))
+});
+
+router.get('/admin/edit/:id', (req, res) => {
+    res.sendFile(path.join(pagesDirectory, 'admin-edit.html'))
+});
+
 export default router;

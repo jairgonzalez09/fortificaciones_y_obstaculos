@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'http://localhost:3000/api/user/catalog/fortificaciones/all';
+
     const catalogContainer = document.getElementById('catalog-container');
     
     const modal = document.querySelector('[data-modal]');
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchCatalog() {
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch('/api/user/catalog/fortificaciones/all');
             if (!response.ok) throw new Error('Error al conectar con la API de catálogos');
             
             const jsonResponse = await response.json();

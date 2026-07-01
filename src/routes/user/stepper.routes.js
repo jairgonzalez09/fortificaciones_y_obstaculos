@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/catalog', (req, res, next) => {
     MultimediaInfo.findAll({
-        where: { parentId: null },
+        where: { parentId: null, isActive: true },
         include: [{
             model: MultimediaFiles,
             as: 'file',
@@ -24,7 +24,7 @@ router.get('/catalog', (req, res, next) => {
 
 router.get('/catalog/all', (req, res, next) => {
     MultimediaInfo.findAll({
-        where: { parentId: null },
+        where: { parentId: null, isActive: true },
         include: [
             {
                 model: MultimediaFiles,
@@ -56,7 +56,7 @@ router.get('/catalog/all', (req, res, next) => {
 
 router.get('/catalog/fortificaciones/all', (req, res, next) => {
     MultimediaInfo.findAll({
-        where: { parentId: null, classification: 'fortificaciones' },
+        where: { parentId: null, classification: 'fortificaciones', isActive: true },
         include: [
             {
                 model: MultimediaFiles,
@@ -88,7 +88,7 @@ router.get('/catalog/fortificaciones/all', (req, res, next) => {
 
 router.get('/catalog/obstaculos/all', (req, res, next) => {
     MultimediaInfo.findAll({
-        where: { parentId: null, classification: 'obstaculos' },
+        where: { parentId: null, classification: 'obstaculos', isActive: true },
         include: [
             {
                 model: MultimediaFiles,
@@ -122,7 +122,7 @@ router.get('/catalog/:id', (req, res, next) => {
     const { id } = req.params;
 
     MultimediaInfo.findOne({
-        where: { id, parentId: null },
+        where: { id, parentId: null, isActive: true },
         include: [
             {
                 model: MultimediaFiles,

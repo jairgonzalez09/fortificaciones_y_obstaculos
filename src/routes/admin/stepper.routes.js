@@ -6,7 +6,7 @@ import { MultimediaFiles, MultimediaInfo } from '../../models/index.js';
 import { uploadStepperFiles } from '../../middlewares/upload.js';
 import { validateBody } from '../../middlewares/validate.js';
 import { protect, restrictToAdmin } from '../../middlewares/auth.js';
-import { catalogStepperSchema } from '../../schemas/stepper.schema.js';
+import { catalogStepperSchema, catalogStepperUpdateSchema } from '../../schemas/stepper.schema.js';
 import { prepareStepperData } from '../../middlewares/stepperFields.js';
 import { AppError } from '../../utils/index.js';
 
@@ -81,16 +81,16 @@ router.post('/catalog-stepper', protect, restrictToAdmin, uploadStepperFiles, pr
     });
 });
 
-router.put('/catalog/:id', protect, restrictToAdmin, uploadStepperFiles, prepareStepperData, validateBody(catalogStepperSchema), async (req, res, next) => {
+router.put('/catalog/:id', protect, restrictToAdmin, uploadStepperFiles, prepareStepperData, validateBody(catalogStepperUpdateSchema), async (req, res, next) => {
     const { id } = req.params;
     const t = await sequelize.transaction();
 
     const processUpdate = async () => {
         const { name, description, classification, type, stepsText: parsedSteps } = req.body;
-        const files = req.files || {}; // Evita lecturas accidentales de 'undefined'
+        const files = req.files || {};
 
         const catalogParent = await MultimediaInfo.findOne({
-            where: { id, parentId: null },
+            where: { id, parentId: null, isActive: true },
             include: [{ model: MultimediaFiles, as: 'file' }]
         });
 
@@ -111,42 +111,83 @@ router.put('/catalog/:id', protect, restrictToAdmin, uploadStepperFiles, prepare
 
         await catalogParent.update(parentUpdateData, { transaction: t });
 
-        const oldSteps = await MultimediaInfo.findAll({
+        const existingSteps = await MultimediaInfo.findAll({
             where: { parentId: id },
-            include: [{ model: MultimediaFiles, as: 'file' }]
+            include: [{ model: MultimediaFiles, as: 'file' }],
+            order: [['stepOrder', 'ASC']]
         });
 
-        const oldStepsFilesToDelete = oldSteps.map(step => path.join(process.cwd(), step.file.url));
-        await Promise.all(oldStepsFilesToDelete.map(filePath => fs.unlink(filePath).catch(() => {})));
+        const hasNewStepImages = files['stepImages'] && files['stepImages'].length > 0;
 
-        await MultimediaInfo.destroy({ where: { parentId: id }, transaction: t });
+        if (hasNewStepImages) {
+            const oldStepsFilesToDelete = existingSteps
+                .map(step => step.file?.url ? path.join(process.cwd(), step.file.url) : null)
+                .filter(Boolean);
+            await Promise.all(oldStepsFilesToDelete.map(filePath => fs.unlink(filePath).catch(() => {})));
 
-        const stepImagesFiles = files['stepImages'] || [];
+            await MultimediaInfo.destroy({ where: { parentId: id }, transaction: t });
 
-        for (let i = 0; i < parsedSteps.length; i++) {
-            const stepData = parsedSteps[i];
-            const stepImage = stepImagesFiles[i];
+            const stepImagesFiles = files['stepImages'];
 
-            if (!stepImage || !stepImage.path) {
-                throw new AppError(`Falta la imagen para el paso número ${i + 1}`, 400);
+            for (let i = 0; i < parsedSteps.length; i++) {
+                const stepData = parsedSteps[i];
+                const stepImage = stepImagesFiles[i];
+
+                if (!stepImage || !stepImage.path) {
+                    throw new AppError(`Falta la imagen para el paso número ${i + 1}`, 400);
+                }
+
+                const stepImagePath = stepImage.path.replace(/\\/g, '/');
+
+                const stepFile = await MultimediaFiles.create({
+                    url: stepImagePath,
+                    type: 'image'
+                }, { transaction: t });
+
+                await MultimediaInfo.create({
+                    name: stepData.title || `Paso ${i + 1}`,
+                    description: stepData.description || '',
+                    classification,
+                    type,
+                    multimediaId: stepFile.id,
+                    parentId: catalogParent.id,
+                    stepOrder: i + 1,
+                }, { transaction: t });
+            }
+        } else {
+            for (let i = 0; i < parsedSteps.length; i++) {
+                const stepData = parsedSteps[i];
+                if (existingSteps[i]) {
+                    await existingSteps[i].update({
+                        name: stepData.title || `Paso ${i + 1}`,
+                        description: stepData.description || '',
+                        stepOrder: i + 1
+                    }, { transaction: t });
+                } else {
+                    await MultimediaInfo.create({
+                        name: stepData.title || `Paso ${i + 1}`,
+                        description: stepData.description || '',
+                        classification,
+                        type,
+                        multimediaId: null,
+                        parentId: catalogParent.id,
+                        stepOrder: i + 1,
+                    }, { transaction: t });
+                }
             }
 
-            const stepImagePath = stepImage.path.replace(/\\/g, '/');
-
-            const stepFile = await MultimediaFiles.create({
-                url: stepImagePath,
-                type: 'image'
-            }, { transaction: t });
-
-            await MultimediaInfo.create({
-                name: stepData.title || `Paso ${i + 1}`,
-                description: stepData.description || '',
-                classification,
-                type,
-                multimediaId: stepFile.id,
-                parentId: catalogParent.id,
-                stepOrder: i + 1,
-            }, { transaction: t });
+            if (parsedSteps.length < existingSteps.length) {
+                const toRemove = existingSteps.slice(parsedSteps.length);
+                for (const step of toRemove) {
+                    if (step.file?.url) {
+                        await fs.unlink(path.join(process.cwd(), step.file.url)).catch(() => {});
+                    }
+                }
+                await MultimediaInfo.destroy({
+                    where: { parentId: id, id: toRemove.map(s => s.id) },
+                    transaction: t
+                });
+            }
         }
 
         await t.commit();
@@ -167,45 +208,17 @@ router.delete('/catalog/:id', protect, restrictToAdmin, (req, res, next) => {
     const { id } = req.params;
 
     MultimediaInfo.findOne({
-        where: { id, parentId: null },
-        include: [
-            { model: MultimediaFiles, as: 'file' },
-            { 
-                model: MultimediaInfo, 
-                as: 'steps', 
-                include: [{ model: MultimediaFiles, as: 'file' }] 
-            }
-        ]
+        where: { id, parentId: null }
     })
     .then(async (catalog) => {
         if (!catalog) throw new AppError('El elemento del catálogo no existe', 404);
 
-        const filesToDelete = [];
-
-        if (catalog.file && catalog.file.url) {
-            filesToDelete.push(path.join(process.cwd(), catalog.file.url));
-        }
-
-        if (catalog.steps && Array.isArray(catalog.steps)) {
-            catalog.steps.forEach(step => {
-                if (step.file && step.file.url) {
-                    filesToDelete.push(path.join(process.cwd(), step.file.url));
-                }
-            });
-        }
-
-        await Promise.all(
-            filesToDelete.map(filePath => 
-                fs.unlink(filePath).catch(() => {})
-            )
-        );
-
-        return catalog.destroy();
+        await catalog.update({ isActive: false });
     })
     .then(() => {
         res.status(200).json({
             status: 'success',
-            message: 'Catálogo, pasos secuenciales y archivos físicos eliminados exitosamente.'
+            message: 'Elemento del catálogo ocultado exitosamente.'
         });
     })
     .catch(next);

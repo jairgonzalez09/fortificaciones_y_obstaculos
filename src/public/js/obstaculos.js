@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchCatalog() {
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch('/api/user/catalog/obstaculos/all');
             if (!response.ok) throw new Error('Error al conectar con la API de catálogos');
             
             const jsonResponse = await response.json();

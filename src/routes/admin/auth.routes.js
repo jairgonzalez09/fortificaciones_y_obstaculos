@@ -5,6 +5,7 @@ import { User } from '../../models/index.js';
 import { validateBody } from '../../middlewares/validate.js';
 import { loginSchema } from '../../schemas/auth.schema.js';
 import { AppError } from '../../utils/index.js';
+import { protect, restrictToAdmin } from '../../middlewares/auth.js';
 
 const router = Router();
 
@@ -25,8 +26,6 @@ router.post('/login', validateBody(loginSchema), (req, res, next) => {
                 { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
             );
 
-            console.log(`TOKEN: ${token}`);
-
             res.status(200).json({
                 status: 'success',
                 token,
@@ -36,6 +35,17 @@ router.post('/login', validateBody(loginSchema), (req, res, next) => {
             });
         })
         .catch(next);
+});
+
+router.get('/verify', protect, restrictToAdmin, (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        message: 'Token válido y permisos de administrador confirmados.',
+        data: {
+            username: req.user.username,
+            role: req.user.role
+        }
+    });
 });
 
 export default router;

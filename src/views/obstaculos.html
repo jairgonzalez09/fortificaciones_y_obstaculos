@@ -1,87 +1,107 @@
-<!doctype html>
-<html lang="es" class="dark bg-background">
+<!DOCTYPE html>
+<html class="dark" lang="es">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#0a0e0d">
-  <title>Obstáculos - Fortobs</title>
-  <meta name="description" content="Advanced tactical obstacle systems and defensive engineering solutions.">
-  <link rel="icon" href="/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/apple-icon.png">
-  <link rel="stylesheet" href="/fonts/geist-sans/index.css">
-  <link rel="stylesheet" href="/fonts/geist-mono/index.css">
-  <link rel="stylesheet" href="/fonts/geist-sans/700.css">
-  <link rel="stylesheet" href="/styles/fortificaciones.css">
-  <script src="/js/obstaculos.js" defer></script>
-  <style>
-    .w-full {
-      width: 100%;
-    }
-
-    .h-full {
-      height: 100%;
-    }
-
-    .object-cover {
-      object-fit: cover;
-    }
-  </style>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Obstáculos - Fortobs | Vanguard Tactics Command System</title>
+    <link rel="shortcut icon" href="/images/logo.webp" type="image/png">
+    <link href="/fonts/archivo-narrow/400.css" rel="stylesheet">
+    <link href="/fonts/archivo-narrow/500.css" rel="stylesheet">
+    <link href="/fonts/archivo-narrow/600.css" rel="stylesheet">
+    <link href="/fonts/archivo-narrow/700.css" rel="stylesheet">
+    <link href="/fonts/archivo-narrow/400-italic.css" rel="stylesheet">
+    <link href="/fonts/archivo-narrow/500-italic.css" rel="stylesheet">
+    <link href="/fonts/archivo-narrow/600-italic.css" rel="stylesheet">
+    <link href="/fonts/archivo-narrow/700-italic.css" rel="stylesheet">
+    <link href="/fonts/hanken-grotesk/400.css" rel="stylesheet">
+    <link href="/fonts/hanken-grotesk/500.css" rel="stylesheet">
+    <link href="/fonts/hanken-grotesk/700.css" rel="stylesheet">
+    <link href="/fonts/jetbrains-mono/500.css" rel="stylesheet">
+    <link href="/styles/fortificaciones.css" rel="stylesheet">
+    <link href="/styles/index.css" rel="stylesheet">
+    <script src="/js/index.js" defer></script>
+    <script src="/js/obstaculos.js" defer></script>
 </head>
 
-<body class="font-sans antialiased bg-background text-foreground">
-  <main class="min-h-screen bg-background text-foreground">
-
-    <header class="border-b border-primary/20 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <a href="/" class="flex items-center gap-2" aria-label="Fortobs home">
-            <div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-background font-bold text-sm">
-              ⬛</div>
-            <span class="text-primary font-bold text-sm tracking-widest hidden sm:inline">Fortobs</span>
-          </a>
-          <nav class="hidden md:flex items-center gap-8" aria-label="Principal">
-            <a href="/fortificaciones"
-              class="text-foreground hover:text-primary transition text-sm uppercase tracking-wide">Fortificaciones</a>
-            <a href="/obstaculos"
-              class="text-foreground hover:text-primary transition text-sm uppercase tracking-wide">Obstáculos</a>
-          </nav>
-          <div class="flex items-center gap-4"></div>
+<body class="selection:bg-primary selection:text-on-primary">
+    <header
+        class="fixed top-0 w-full z-50 bg-void-black/80 backdrop-blur-md border-b border-outline-variant/30 px-6 md:px-16 py-2 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-16 h-16 flex items-center justify-center"><img alt="Fortobs Logo"
+                    class="w-full h-full object-contain"
+                    src="/images/logo.webp">
+            </div>
+            <span class="text-xl font-bold tracking-tighter text-white uppercase">Fortobs</span>
         </div>
-      </div>
+        <nav class="hidden md:flex items-center gap-10">
+            <a class="text-sm font-semibold tracking-widest text-on-surface-variant hover:text-primary transition-colors"
+                href="/fortificaciones">FORTIFICACIONES</a>
+            <a class="text-sm font-semibold tracking-widest text-on-surface-variant hover:text-primary transition-colors"
+                href="/obstaculos">OBSTÁCULOS</a>
+        </nav>
+        <div class="md:hidden">
+            <button id="menuBtn" class="text-primary">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    </path>
+                </svg>
+            </button>
+        </div>
     </header>
 
-    <section class="relative min-h-screen flex items-center py-12 md:py-20 overflow-hidden">
-      <div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10"></div>
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <div class="space-y-6 md:space-y-8">
-            <div class="inline-flex items-center gap-2 px-3 py-1 border border-primary/30 rounded-md">
-              <div class="w-2 h-2 bg-primary rounded-full"></div>
-              <span class="text-primary text-xs uppercase tracking-widest font-medium">Guía digital</span>
-            </div>
-            <div class="space-y-2">
-              <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight">
-                Obstáculos<br><span class="text-muted-foreground">Tácticos</span>
-              </h1>
-            </div>
-            <p class="text-foreground/80 text-base md:text-lg leading-relaxed max-w-md">Estructuras y
-              dispositivos de interrupción diseñados para canalizar, demorar y neutralizar el avance del
-              adversario. Detallando su ensamblaje mediante secuencias interactivas que ilustran su despliegue en el
-              terreno.</p>
-            <div class="flex flex-col sm:flex-row gap-4 pt-4">
-              <a href="/"
-                class="bg-primary text-primary-foreground px-6 py-3 rounded font-bold text-sm uppercase tracking-widest hover:bg-primary/90 transition inline-flex items-center justify-center gap-2">INICIO</a>
-            </div>
-          </div>
-          <div class="relative h-96 md:h-[500px] lg:h-[600px] rounded-lg overflow-hidden">
-            <img src="/images/obstaculos.png" alt="Hero Obstáculos" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent"></div>
-          </div>
+    <nav id="mobileNav"
+        class="hidden fixed top-16 left-0 w-full bg-void-black/95 backdrop-blur-md border-b border-outline-variant/30 z-40 md:hidden">
+        <div class="flex flex-col items-center gap-6 py-8">
+            <a class="text-sm font-semibold tracking-widest text-on-surface-variant hover:text-primary transition-colors"
+                href="/fortificaciones">FORTIFICACIONES</a>
+            <a class="text-sm font-semibold tracking-widest text-on-surface-variant hover:text-primary transition-colors"
+                href="/obstaculos">OBSTÁCULOS</a>
         </div>
-      </div>
-    </section>
+    </nav>
+
+    <main class="technical-grid">
+
+        <section
+            class="relative min-h-[90vh] flex flex-col lg:flex-row items-center justify-center px-6 md:px-16 pt-20 lg:pt-24 pb-16 gap-12 lg:gap-24 overflow-hidden bg-surface-container-lowest">
+
+            <div class="absolute inset-0 hero-bg-gradient pointer-events-none opacity-60"></div>
+            <div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 blur-[120px] rounded-full animate-pulse-slow">
+            </div>
+
+            <div class="w-full lg:w-1/2 flex flex-col items-start gap-8 relative z-10">
+                <div
+                    class="inline-flex items-center gap-2 bg-surface-container py-1.5 px-3 rounded-full border border-primary/30 opacity-0 animate-fade-up">
+                    <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                    <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">GUÍA DIGITAL</span>
+                </div>
+                <h1
+                    class="text-4xl md:text-6xl lg:text-8xl font-black text-white leading-tight uppercase -ml-1 opacity-0 animate-fade-up stagger-1">
+                    Obstáculos
+                </h1>
+                <p
+                    class="text-body-lg text-on-surface-variant max-w-lg leading-relaxed font-body-lg opacity-0 animate-fade-up stagger-2">
+                    Estructuras y dispositivos de interrupción diseñados para canalizar, demorar y neutralizar el avance del
+                    adversario. Detallando su ensamblaje mediante secuencias interactivas que ilustran su despliegue en el
+                    terreno.
+                </p>
+                <div class="flex flex-wrap gap-4 pt-4 opacity-0 animate-fade-up stagger-3">
+                    <a class="px-8 py-4 border border-outline text-white font-bold tracking-widest uppercase text-sm rounded hover:bg-white/5 transition-all"
+                        href="/">
+                        INICIO
+                    </a>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-1/2 flex justify-center items-center relative opacity-0 animate-fade-up stagger-4">
+                <div class="absolute inset-0 bg-primary/10 blur-[120px] rounded-full scale-75 animate-pulse-slow"></div>
+                <div class="relative z-10 w-full max-w-4xl animate-float">
+                    <img alt="Obstáculos"
+                        class="w-full h-auto object-contain drop-shadow-[0_35px_35px_rgba(0,255,127,0.1)]"
+                        src="/images/obstaculos.png">
+                </div>
+            </div>
+        </section>
 
     <section class="py-16 md:py-24 bg-background">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -158,6 +178,23 @@
     </div>
 
   </main>
+
+    <footer class="bg-void-black border-t border-outline-variant/30 py-4 px-6 md:px-2">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center"><img alt="Fortobs Logo"
+                        class="w-24 h-24 object-cover"
+                        src="/images/logo.webp">
+                </div>
+                <span class="text-xl font-bold tracking-tighter text-white uppercase">Fortobs</span>
+            </div>
+
+            <div class="text-xs text-on-surface-variant font-mono">
+                © 2024 Fortobs. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
 </body>
 
 </html>

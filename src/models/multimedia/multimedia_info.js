@@ -47,6 +47,12 @@ export const MultimediaInfo = sequelize.define('MultimediaInfo', {
         type: DataTypes.INTEGER,
         allowNull: true,
         field: 'step_order'
+    },
+
+    isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        field: 'is_active'
     }
 }, {
     tableName: 'multimedia_info',
@@ -60,7 +66,8 @@ export const MultimediaInfo = sequelize.define('MultimediaInfo', {
             unique: true,
             fields: ['name'],
             where: {
-                parent_id: null
+                parent_id: null,
+                is_active: true
             }
         }
     ]

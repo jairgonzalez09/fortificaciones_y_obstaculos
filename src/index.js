@@ -12,6 +12,21 @@ const app = express();
 
 loadMiddlewares(app);
 
+const fontPackages = {
+    'plus-jakarta-sans': '@fontsource/plus-jakarta-sans',
+    'inter': '@fontsource/inter',
+    'hanken-grotesk': '@fontsource/hanken-grotesk',
+    'archivo-narrow': '@fontsource/archivo-narrow',
+    'jetbrains-mono': '@fontsource/jetbrains-mono',
+    'material-symbols-outlined': '@fontsource/material-symbols-outlined',
+};
+
+for (const [route, pkg] of Object.entries(fontPackages)) {
+    app.use(`/fonts/${route}`, express.static(
+        path.join(process.cwd(), 'node_modules', pkg)
+    ));
+}
+
 app.use('/', routes);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 

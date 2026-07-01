@@ -1,6 +1,3 @@
-    const API_URL = 'http://localhost:3000/api/user/catalog/fortificaciones/all';
-    const FETCH_API_URL = 'http://localhost:3000/api/user/catalog/fortificaciones/all';
-
 (() => {
     const form = document.querySelector('form') || document.forms[0];
     
@@ -38,8 +35,11 @@
             `;
         }
 
+        let retries = 0;
+        const maxRetries = 1;
+
         try {
-            const response = await fetch(FETCH_API_URL, {
+            let response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -60,6 +60,36 @@
             }
 
         } catch (error) {
+            if (retries < maxRetries && (error.name === 'TypeError' || error.message.includes('NetworkError') || error.message.includes('fetch'))) {
+                retries++;
+                await new Promise(r => setTimeout(r, 800));
+                try {
+                    const retryResponse = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    const retryData = await retryResponse.json();
+                    if (!retryResponse.ok) throw new Error(retryData.message || 'Credenciales incorrectas.');
+                    if (retryData.status === 'success' && retryData.token) {
+                        localStorage.setItem('adminToken', retryData.token);
+                        console.log(`Token: ${retryData.token}`);
+                        window.location.replace('/admin');
+                        return;
+                    }
+                } catch (retryError) {
+                    showError(retryError.message || "Error de conexión con el servidor.");
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = `
+                            <span>Entrar</span>
+                            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                        `;
+                    }
+                    return;
+                }
+                return;
+            }
             showError(error.message || "Error de conexión con el servidor.");
             
             if (submitButton) {
